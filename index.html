@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>R-S TOP UP BD</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #8e44ad; --secondary: #27ae60; --bg: #f0f2f5;
+            --white: #ffffff; --text: #2c3e50; --accent: #e67e22;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: var(--bg); color: var(--text); padding-bottom: 80px; overflow-x: hidden; }
+
+        /* Header */
+        .header { background: linear-gradient(135deg, #8e44ad, #9b59b6); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
+        .header-left { display: flex; align-items: center; gap: 10px; }
+        .header-left img { width: 40px; height: 40px; border-radius: 50%; border: 2px solid white; }
+        .wallet-info { background: rgba(255,255,255,0.2); padding: 5px 12px; border-radius: 20px; font-weight: bold; }
+
+        /* Pages */
+        .page { display: none; padding: 15px; animation: fadeIn 0.3s ease; }
+        .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Grid */
+        .pkg-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .pkg-card { background: var(--white); border-radius: 15px; padding: 15px; text-align: center; border: 2px solid transparent; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .pkg-card.active { border-color: var(--primary); background: #f4ecf7; }
+        .pkg-card img { width: 35px; margin-bottom: 8px; }
+
+        /* Input & Buttons */
+        .input-box { background: white; padding: 15px; border-radius: 15px; margin-top: 15px; }
+        .input-field { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 10px; margin-top: 8px; font-size: 16px; outline: none; }
+        .btn { display: block; width: 100%; padding: 15px; text-align: center; border-radius: 12px; font-weight: bold; cursor: pointer; border: none; margin-top: 15px; color: white; }
+        .btn-primary { background: linear-gradient(135deg, #8e44ad, #9b59b6); }
+        .btn-success { background: linear-gradient(135deg, #27ae60, #2ecc71); }
+
+        /* Profile Card */
+        .profile-card { background: white; padding: 20px; border-radius: 20px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .profile-card img { width: 70px; border-radius: 50%; border: 3px solid var(--primary); margin-bottom: 10px; }
+
+        /* History */
+        .history-item { background: white; padding: 12px; border-radius: 12px; margin-bottom: 10px; border-left: 5px solid var(--primary); font-size: 14px; }
+        .status-pending { color: #f39c12; font-weight: bold; }
+        .status-success { color: #27ae60; font-weight: bold; }
+
+        /* Wallet Payment Area */
+        .method-box { flex: 1; padding: 10px; border: 2px solid #ddd; border-radius: 10px; text-align: center; cursor: pointer; margin-top: 10px; }
+        .method-box.active { border-color: var(--primary); background: #f4ecf7; }
+
+        /* Bottom Nav */
+        .nav-bottom { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #eee; }
+        .nav-item { text-align: center; color: #7f8c8d; font-size: 11px; flex: 1; cursor: pointer; }
+        .nav-item.active { color: var(--primary); font-weight: bold; }
+        .nav-item i { font-size: 20px; display: block; margin-bottom: 3px; }
+
+        /* Popup */
+        #popup { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 25px; border-radius: 20px; text-align: center; z-index: 2000; box-shadow: 0 10px 40px rgba(0,0,0,0.2); width: 85%; border-top: 5px solid var(--secondary); }
+        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1500; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="header-left">
+            <img src="https://i.ibb.co/QFLLfm9G/IMG-20260505-155626-041.jpg" alt="Logo">
+            <div class="app-name">𝗥-𝗦 𝗧𝗢𝗣 𝗨𝗣 𝗕𝗗</div>
+        </div>
+        <div class="wallet-info">৳ <span id="balanceDisplay">0.00</span></div>
+    </div>
+
+    <div id="home" class="page active">
+        <h4 style="margin-bottom:12px;">ডায়মন্ড প্যাকেজ সিলেক্ট করুন:</h4>
+        <div class="pkg-grid" id="packages"></div>
+        <div id="order-form" style="display:none;" class="input-box">
+            <p id="sel-pkg" style="font-weight: bold; color: var(--primary);"></p>
+            <input type="number" id="gameUID" class="input-field" placeholder="গেম ইউআইডি (UID) দিন">
+            <button class="btn btn-success" onclick="confirmOrder()">অর্ডার কনফার্ম করুন</button>
+        </div>
+    </div>
+
+    <div id="wallet" class="page">
+        <div class="profile-card">
+            <h3>টাকা জমা দিন (Recharge)</h3>
+            <p>বিকাশ/নগদ নাম্বার (পার্সোনাল)</p>
+            <h2 style="color:var(--primary); margin: 10px 0;">01772386649</h2>
+            <button class="btn btn-primary" onclick="copyNum()" style="width:auto; padding:5px 15px; margin:0 auto;">নাম্বার কপি করুন</button>
+        </div>
+        <div class="input-box">
+            <div style="display:flex; gap:10px;">
+                <div class="method-box active" onclick="setPay('Bkash', this)">Bkash</div>
+                <div class="method-box" onclick="setPay('Nagad', this)">Nagad</div>
+            </div>
+            <input type="text" id="trxID" class="input-field" placeholder="ট্রানজেকশন আইডি (TrxID)">
+            <input type="number" id="depAmt" class="input-field" placeholder="পরিমান (মিনিমাম ৫০৳)">
+            <button class="btn btn-success" onclick="submitDep()">ডিপোজিট রিকোয়েস্ট দিন</button>
+        </div>
+    </div>
+
+    <div id="history" class="page">
+        <h3>অর্ডার এবং ডিপোজিট হিস্টোরি</h3>
+        <div id="histList" style="margin-top:15px;"></div>
+    </div>
+
+    <div id="profile" class="page">
+        <div class="profile-card">
+            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="User">
+            <h2 id="userName">Telegram User</h2>
+            <p id="userId">UID: 000000000</p>
+            <div style="display:flex; justify-content: space-around; margin-top:20px; background:#f9f9f9; padding:10px; border-radius:10px;">
+                <div><p>ব্যালেন্স</p><b id="p-bal">৳ 0.00</b></div>
+                <div><p>অর্ডার</p><b id="p-ord">0</b></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+    <div id="popup">
+        <div style="font-size: 45px; color: var(--secondary);"><i class="fas fa-check-circle"></i></div>
+        <h2 id="pop-title">Success!</h2>
+        <p id="pop-msg" style="margin:10px 0; color:#555;"></p>
+        <button class="btn btn-primary" onclick="closePopup()">বন্ধ করুন</button>
+    </div>
+
+    <div class="nav-bottom">
+        <div class="nav-item active" onclick="nav('home', this)"><i class="fas fa-home"></i>Home</div>
+        <div class="nav-item" onclick="nav('wallet', this)"><i class="fas fa-wallet"></i>Wallet</div>
+        <div class="nav-item" onclick="nav('history', this)"><i class="fas fa-history"></i>History</div>
+        <div class="nav-item" onclick="nav('profile', this)"><i class="fas fa-user"></i>Profile</div>
+    </div>
+
+    <script>
+        // Telegram WebApp Initialization
+        const tg = window.Telegram.WebApp;
+        tg.expand(); // অ্যাপটি পুরো স্ক্রিনে ওপেন হবে
+
+        // User Data from Telegram
+        const user = tg.initDataUnsafe.user;
+        if (user) {
+            document.getElementById('userName').innerText = user.first_name + (user.last_name ? " " + user.last_name : "");
+            document.getElementById('userId').innerText = "UID: " + user.id;
+        }
+
+        let db = JSON.parse(localStorage.getItem('rs_db')) || { balance: 0, orders: 0, history: [] };
+        let selPkg = null;
+        let payMethod = "Bkash";
+
+        const pkgs = [
+            {n:'25 Diamond', p:26}, {n:'50 Diamond', p:42}, {n:'100 Diamond', p:80},
+            {n:'115 Diamond', p:85}, {n:'240 Diamond', p:165}, {n:'610 Diamond', p:400},
+            {n:'1240 Diamond', p:800}, {n:'2530 Diamond', p:1570}, {n:'5060 Diamond', p:3100},
+            {n:'10120 Diamond', p:6250}, {n:'Weekly', p:150}, {n:'Monthly', p:850}
+        ];
+
+        // Grid Load
+        const pkgCont = document.getElementById('packages');
+        pkgs.forEach(pkg => {
+            const d = document.createElement('div');
+            d.className = 'pkg-card';
+            d.innerHTML = `<img src="https://cdn-icons-png.flaticon.com/512/3571/3571932.png"><h4>${pkg.n}</h4><p>৳ ${pkg.p}</p>`;
+            d.onclick = () => {
+                document.querySelectorAll('.pkg-card').forEach(c => c.classList.remove('active'));
+                d.classList.add('active');
+                selPkg = pkg;
+                document.getElementById('order-form').style.display = 'block';
+                document.getElementById('sel-pkg').innerText = `সিলেক্টেড: ${pkg.n} (দাম: ${pkg.p}৳)`;
+            };
+            pkgCont.appendChild(d);
+        });
+
+        function sync() {
+            document.getElementById('balanceDisplay').innerText = db.balance.toFixed(2);
+            document.getElementById('p-bal').innerText = "৳" + db.balance.toFixed(2);
+            document.getElementById('p-ord').innerText = db.orders;
+            localStorage.setItem('rs_db', JSON.stringify(db));
+            renderHist();
+        }
+
+        function nav(id, el) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            el.classList.add('active');
+        }
+
+        function copyNum() {
+            navigator.clipboard.writeText("01772386649");
+            tg.showAlert("নাম্বার কপি করা হয়েছে!");
+        }
+
+        function confirmOrder() {
+            const uid = document.getElementById('gameUID').value;
+            if(!uid) return alert("গেম ইউআইডি দিন!");
+            if(db.balance < selPkg.p) return tg.showPopup({message: "ব্যালেন্স পর্যাপ্ত নয়! দয়া করে ডিপোজিট করুন।", buttons: [{type: "close"}]});
+
+            db.balance -= selPkg.p;
+            db.orders += 1;
+            db.history.unshift({type:'Order', item: selPkg.n, id: uid, amt: selPkg.p, status:'Success', date: new Date().toLocaleTimeString()});
+            sync();
+            showPopup("অর্ডার সফল!", `${selPkg.n} এর জন্য আপনার অর্ডারটি গ্রহণ করা হয়েছে।`);
+            document.getElementById('order-form').style.display = 'none';
+        }
+
+        function submitDep() {
+            const trx = document.getElementById('trxID').value;
+            const amt = parseInt(document.getElementById('depAmt').value);
+            if(!trx || !amt) return alert("সব তথ্য দিন!");
+            if(amt < 50) return alert("মিনিমাম ৫০৳ ডিপোজিট করতে হবে!");
+
+            db.history.unshift({type:'Deposit', item: payMethod, id: trx, amt: amt, status:'Pending', date: new Date().toLocaleTimeString()});
+            sync();
+            showPopup("রিকোয়েস্ট পাঠানো হয়েছে!", "অ্যাডমিন চেক করে কিছুক্ষণের মধ্যে ব্যালেন্স অ্যাড করে দিবে।");
+            document.getElementById('trxID').value = ''; document.getElementById('depAmt').value = '';
+        }
+
+        function renderHist() {
+            const list = document.getElementById('histList');
+            list.innerHTML = db.history.length ? '' : '<p>কোন তথ্য নেই</p>';
+            db.history.forEach(h => {
+                list.innerHTML += `<div class="history-item">
+                    <div style="display:flex; justify-content: space-between"><b>${h.type}: ${h.item}</b> <span class="status-${h.status.toLowerCase()}">${h.status}</span></div>
+                    <small>${h.date}</small> <br> ID: ${h.id} | <b>৳${h.amt}</b>
+                </div>`;
+            });
+        }
+
+        function setPay(m, el) {
+            payMethod = m;
+            document.querySelectorAll('.method-box').forEach(b => b.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        function showPopup(t, m) {
+            document.getElementById('pop-title').innerText = t;
+            document.getElementById('pop-msg').innerText = m;
+            document.getElementById('overlay').style.display = 'block';
+            document.getElementById('popup').style.display = 'block';
+        }
+
+        function closePopup() {
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('popup').style.display = 'none';
+        }
+
+        sync();
+    </script>
+</body>
+</html>
