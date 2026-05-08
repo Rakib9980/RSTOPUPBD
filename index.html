@@ -2,302 +2,398 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>R-S TOP UP BD | Professional</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>R-S TOP UP BD | Elysian</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #a29bfe; --secondary: #6c5ce7; --accent: #00cec9;
-            --danger: #ff7675; --success: #55efc4; --glass: rgba(255, 255, 255, 0.1);
-            --bg: #0f0c29; --gradient: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            --neon-purple: #8e2de2;
+            --neon-blue: #4a00e0;
+            --neon-cyan: #00f2fe;
+            --deep-dark: #050505;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --border-glass: rgba(255, 255, 255, 0.1);
+            --gold: #ffcc00;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        body { background: var(--gradient); color: #fff; min-height: 100vh; padding-bottom: 90px; }
 
-        /* Intro Ad */
-        #ad-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 5000; display: flex; justify-content: center; align-items: center; padding: 20px; }
-        .ad-content { background: var(--glass); border: 1px solid var(--accent); border-radius: 25px; padding: 25px; text-align: center; backdrop-filter: blur(20px); width: 100%; max-width: 350px; }
-        
-        /* Header */
-        .header { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--glass); position: sticky; top: 0; z-index: 1000; }
-        .app-brand { display: flex; align-items: center; gap: 10px; }
-        .app-brand img { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--accent); }
-        .wallet-display { background: var(--glass); padding: 5px 15px; border-radius: 12px; color: var(--accent); font-weight: bold; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { 
+            background: var(--deep-dark); 
+            background-image: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #050505 100%);
+            color: #e0e0e0; font-family: 'Rajdhani', sans-serif; overflow-x: hidden;
+            padding-bottom: 100px;
+        }
+
+        /* Animated Background Particles Concept */
+        body::before {
+            content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+            opacity: 0.1; z-index: -1;
+        }
+
+        /* Global Premium Header */
+        .header {
+            padding: 20px; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-glass); display: flex; justify-content: space-between;
+            align-items: center; position: sticky; top: 0; z-index: 2000;
+        }
+        .brand-zone { display: flex; align-items: center; gap: 15px; }
+        .brand-logo { 
+            width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--neon-cyan);
+            box-shadow: 0 0 15px var(--neon-cyan), inset 0 0 10px var(--neon-cyan);
+            padding: 2px; background: #000;
+        }
+        .brand-name { font-family: 'Orbitron', sans-serif; font-size: 14px; letter-spacing: 2px; color: #fff; text-shadow: 0 0 10px var(--neon-purple); }
+
+        .balance-pill {
+            background: linear-gradient(90deg, var(--neon-purple), var(--neon-blue));
+            padding: 8px 18px; border-radius: 50px; font-weight: 700; font-size: 14px;
+            box-shadow: 0 0 20px rgba(142, 45, 226, 0.4); border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        /* Premium Ad Modal */
+        #ad-gate { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: 0.8s cubic-bezier(0.9, 0, 0.1, 1); }
+        .ad-banner { width: 80%; max-width: 320px; position: relative; text-align: center; }
+        .ad-banner img { width: 120px; margin-bottom: 25px; filter: drop-shadow(0 0 20px var(--neon-cyan)); animation: float 3s infinite ease-in-out; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        .ad-title { font-family: 'Orbitron', sans-serif; color: var(--neon-cyan); font-size: 24px; margin-bottom: 10px; }
+        .ad-btn { 
+            margin-top: 30px; padding: 15px 40px; background: none; border: 2px solid var(--neon-cyan);
+            color: var(--neon-cyan); font-family: 'Orbitron', sans-serif; cursor: pointer;
+            transition: 0.4s; position: relative; overflow: hidden;
+        }
+        .ad-btn:hover { background: var(--neon-cyan); color: #000; box-shadow: 0 0 30px var(--neon-cyan); }
 
         /* Pages */
-        .page { display: none; padding: 20px; animation: fadeIn 0.4s ease; }
+        .page { display: none; padding: 25px 15px; animation: slideIn 0.5s ease-out forwards; }
         .page.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Detailed Instruction Box */
-        .info-box { background: rgba(0, 206, 201, 0.1); border: 1px solid var(--accent); padding: 12px; border-radius: 12px; font-size: 11px; margin-bottom: 15px; color: #eee; line-height: 1.5; }
+        /* Cyber Info Box */
+        .cyber-info {
+            background: linear-gradient(90deg, rgba(74, 0, 224, 0.1), transparent);
+            border-left: 3px solid var(--neon-purple); padding: 15px; border-radius: 0 15px 15px 0;
+            margin-bottom: 25px; font-size: 13px; line-height: 1.6; color: #bbb;
+        }
+        .cyber-info b { color: var(--neon-cyan); display: block; margin-bottom: 5px; font-family: 'Orbitron'; }
 
-        /* Package Design */
-        .pkg-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-        .pkg-card { background: var(--glass); border-radius: 18px; padding: 18px; text-align: center; border: 1px solid var(--glass); transition: 0.3s; }
-        .pkg-card.active { border-color: var(--accent); background: rgba(0, 206, 201, 0.2); }
-        .pkg-card p { font-size: 18px; font-weight: 800; color: var(--accent); }
+        /* Premium Package Cards */
+        .pkg-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        .pkg-card {
+            background: var(--card-bg); border: 1px solid var(--border-glass); border-radius: 20px;
+            padding: 25px 10px; text-align: center; position: relative; transition: 0.4s;
+            backdrop-filter: blur(5px);
+        }
+        .pkg-card::after { content: "PREMIUM"; position: absolute; top: 10px; right: 10px; font-size: 8px; color: var(--gold); border: 1px solid var(--gold); padding: 2px 5px; border-radius: 4px; opacity: 0.6; }
+        .pkg-card img { width: 50px; margin-bottom: 15px; filter: drop-shadow(0 0 10px var(--neon-cyan)); }
+        .pkg-card h4 { font-family: 'Orbitron'; font-size: 13px; color: #fff; margin-bottom: 5px; }
+        .pkg-card p { font-size: 20px; font-weight: 700; color: var(--neon-cyan); }
+        .pkg-card.active { border-color: var(--neon-cyan); background: rgba(0, 242, 254, 0.05); transform: translateY(-10px); box-shadow: 0 10px 30px rgba(0, 242, 254, 0.2); }
 
-        /* Input Styles */
-        .premium-box { background: var(--glass); padding: 20px; border-radius: 25px; border: 1px solid var(--glass); margin-top: 20px; }
-        input { width: 100%; padding: 14px; background: rgba(0,0,0,0.4); border: 1px solid var(--glass); border-radius: 12px; color: #fff; margin-bottom: 12px; outline: none; }
-        .btn { padding: 15px; border-radius: 15px; text-align: center; font-weight: bold; cursor: pointer; border: none; width: 100%; color: white; text-transform: uppercase; }
-        .btn-main { background: linear-gradient(45deg, var(--secondary), var(--accent)); box-shadow: 0 5px 15px rgba(108, 92, 231, 0.3); }
+        /* Modern Input Area */
+        .input-group { margin-top: 30px; background: rgba(255,255,255,0.02); border: 1px solid var(--border-glass); padding: 25px; border-radius: 30px; }
+        .cyber-input {
+            width: 100%; background: #000; border: 1px solid var(--border-glass); padding: 16px;
+            border-radius: 12px; color: #fff; font-size: 16px; margin-bottom: 20px;
+            transition: 0.3s; box-shadow: inset 0 0 5px rgba(0,0,0,0.5);
+        }
+        .cyber-input:focus { border-color: var(--neon-purple); box-shadow: 0 0 15px rgba(142, 45, 226, 0.3); }
 
-        /* History & Admin Card */
-        .card { background: var(--glass); padding: 15px; border-radius: 15px; margin-bottom: 12px; border-left: 5px solid var(--accent); position: relative; }
-        .status { font-size: 10px; padding: 3px 8px; border-radius: 5px; float: right; font-weight: bold; text-transform: uppercase; }
+        .btn-elysian {
+            width: 100%; padding: 18px; border: none; border-radius: 15px;
+            background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple));
+            color: #fff; font-family: 'Orbitron'; font-weight: 700; cursor: pointer;
+            text-transform: uppercase; letter-spacing: 2px; transition: 0.4s;
+            box-shadow: 0 5px 20px rgba(74, 0, 224, 0.5);
+        }
+        .btn-elysian:active { transform: scale(0.96); }
 
-        /* Profile Stats */
-        .profile-header { background: var(--glass); padding: 25px; border-radius: 30px; text-align: center; border: 1px solid var(--glass); margin-bottom: 20px; }
-        .profile-img { width: 85px; height: 85px; border-radius: 50%; border: 3px solid var(--accent); margin-bottom: 10px; }
-        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-        .stat-item { background: rgba(0,0,0,0.3); padding: 10px; border-radius: 15px; border: 1px solid var(--glass); }
+        /* Wallet Luxury */
+        .wallet-luxury { text-align: center; padding: 40px 20px; background: rgba(0,0,0,0.4); border-radius: 30px; border: 1px solid var(--border-glass); margin-bottom: 25px; position: relative; overflow: hidden; }
+        .wallet-luxury::before { content: ""; position: absolute; width: 150px; height: 150px; background: var(--neon-blue); filter: blur(100px); top: -50px; left: -50px; opacity: 0.3; }
+        . luxury-num { font-size: 32px; font-family: 'Orbitron'; color: var(--neon-cyan); letter-spacing: 3px; margin: 15px 0; }
 
-        /* Nav */
-        .nav-bottom { position: fixed; bottom: 0; width: 100%; background: rgba(15, 12, 41, 0.98); display: flex; padding: 12px 0; border-top: 1px solid var(--glass); z-index: 1000; }
-        .nav-item { flex: 1; text-align: center; color: rgba(255,255,255,0.4); font-size: 10px; }
-        .nav-item.active { color: var(--accent); }
-        .nav-item i { font-size: 22px; display: block; margin-bottom: 4px; }
+        /* Bottom Tab Navigator */
+        .tab-nav {
+            position: fixed; bottom: 0; width: 100%; height: 80px; background: rgba(0,0,0,0.9);
+            backdrop-filter: blur(30px); border-top: 1px solid var(--border-glass);
+            display: flex; justify-content: space-around; align-items: center; z-index: 3000;
+        }
+        .tab-item { text-align: center; color: #555; transition: 0.4s; cursor: pointer; position: relative; }
+        .tab-item i { font-size: 24px; margin-bottom: 5px; display: block; }
+        .tab-item span { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
+        .tab-item.active { color: var(--neon-cyan); }
+        .tab-item.active::after { content: ""; position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 30px; height: 2px; background: var(--neon-cyan); box-shadow: 0 0 10px var(--neon-cyan); }
+
+        /* Admin Secret Mode */
+        .admin-zone { background: #000; border: 1px dashed var(--danger); padding: 20px; border-radius: 20px; margin-top: 20px; }
+        .card-task { background: var(--card-bg); padding: 15px; border-radius: 15px; margin-bottom: 15px; border: 1px solid var(--border-glass); }
+
+        /* Profile Luxury Card */
+        .profile-container { text-align: center; }
+        .p-hex { 
+            width: 100px; height: 100px; margin: 0 auto 20px; position: relative;
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            background: var(--neon-cyan); padding: 3px;
+        }
+        .p-hex img { 
+            width: 100%; height: 100%; object-fit: cover;
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            background: #000;
+        }
     </style>
 </head>
 <body>
 
-    <div id="ad-modal">
-        <div class="ad-content">
-            <img src="https://i.ibb.co/QFLLfm9G/IMG-20260505-155626-041.jpg" style="width:70px; border-radius:50%; margin-bottom:15px; border:2px solid var(--accent);">
-            <h2 style="color:var(--accent)">Welcome to R-S</h2>
-            <p style="font-size: 13px; margin: 15px 0; color: #ccc;">নিরাপদ এবং দ্রুততম অটো টপ-আপ সার্ভিসে আপনাকে স্বাগতম। আমরা দিচ্ছি ১০০% আইডি সেফটির গ্যারান্টি।</p>
-            <button class="btn btn-main" onclick="closeAd()">Get Started</button>
+    <div id="ad-gate">
+        <div class="ad-banner">
+            <img src="https://i.ibb.co/QFLLfm9G/IMG-20260505-155626-041.jpg" alt="RS Logo">
+            <div class="ad-title">R-S TOP UP</div>
+            <p style="color:#888; letter-spacing: 1px; line-height: 1.5;">EXTREME FAST & SECURE<br>DIAMOND TOP-UP SYSTEM</p>
+            <button class="ad-btn" onclick="igniteApp()">INITIALIZE SYSTEM</button>
         </div>
     </div>
 
     <div class="header">
-        <div class="app-brand">
-            <img src="https://i.ibb.co/QFLLfm9G/IMG-20260505-155626-041.jpg">
-            <div class="app-name" style="font-weight: 800;">𝗥-𝗦 𝗧𝗢𝗣 𝗨𝗣 𝗕𝗗</div>
+        <div class="brand-zone">
+            <img src="https://i.ibb.co/QFLLfm9G/IMG-20260505-155626-041.jpg" class="brand-logo">
+            <div class="brand-name">RS-SYSTEM v4.0</div>
         </div>
-        <div class="wallet-display">৳ <span id="mainBal">0.00</span></div>
+        <div class="balance-pill">৳ <span id="mainBalance">0.00</span></div>
     </div>
 
     <div id="home" class="page active">
-        <div class="info-box">
-            <i class="fas fa-info-circle"></i> <b>কিভাবে অর্ডার করবেন:</b><br>
-            নিচে থেকে আপনার পছন্দের প্যাকেজটি সিলেক্ট করুন। এরপর আপনার গেমের সঠিক প্লেয়ার আইডি (UID) দিয়ে কনফার্ম করুন। অর্ডার করার ৫-১০ মিনিটের মধ্যে ডায়মন্ড আপনার একাউন্টে পৌঁছে যাবে।
+        <div class="cyber-info">
+            <b><i class="fas fa-shield-halved"></i> PROTOCOL: SECURE ORDERING</b>
+            পছন্দের প্যাকেজটি নির্বাচন করার পর আপনার গেম ইউআইডি (UID) প্রদান করুন। আমাদের সিস্টেম স্বয়ংক্রিয়ভাবে আপনার ডাটা প্রসেস করবে।
         </div>
-        <div class="pkg-grid" id="pkgs"></div>
-        <div id="buyForm" class="premium-box" style="display:none">
-            <h4 id="selName" style="color:var(--accent); margin-bottom: 15px;"></h4>
-            <div class="info-box" style="border-color: var(--danger); color: var(--danger);">
-                <b>সতর্কতা:</b> ভুল ইউআইডি দিলে ডায়মন্ড অন্য একাউন্টে চলে যেতে পারে। তাই আইডি দেওয়ার সময় দুইবার চেক করে নিন।
+        
+        <div class="pkg-grid" id="pkgRender"></div>
+
+        <div id="elysianForm" class="input-group" style="display:none; animation: slideIn 0.4s ease;">
+            <h3 id="targetName" style="color:#fff; margin-bottom:15px; font-family:'Orbitron'; font-size:16px;"></h3>
+            <div class="cyber-info" style="border-color: var(--danger); background: rgba(255, 118, 117, 0.05);">
+                <b>REQUIRED: PLAYER UID</b>
+                নিশ্চিত করুন যে আপনার ইউআইডি সঠিক। ভুল তথ্যের জন্য প্রোটোকল রিফান্ড সাপোর্ট করবে না।
             </div>
-            <input type="number" id="pUID" placeholder="গেম ইউআইডি (UID) লিখুন">
-            <button class="btn btn-main" onclick="makeOrder()">Confirm Purchase</button>
+            <input type="number" id="playerUID" class="cyber-input" placeholder="ENTER GAME UID">
+            <button class="btn-elysian" onclick="executeOrder()">EXECUTE PURCHASE</button>
         </div>
     </div>
 
     <div id="wallet" class="page">
-        <div class="info-box">
-            <i class="fas fa-wallet"></i> <b>টাকা অ্যাড করার নিয়ম:</b><br>
-            প্রথমে নিচের দেওয়া নাম্বারটি কপি করুন। আপনার বিকাশ বা নগদ অ্যাপ থেকে 'Send Money' করুন। সফলভাবে টাকা পাঠানোর পর 'Transaction ID' এবং 'Amount' নিচের বক্সে দিয়ে সাবমিট করুন। অ্যাডমিন চেক করে ১-৫ মিনিটের মধ্যে ব্যালেন্স অ্যাড করে দিবে।
+        <div class="cyber-info">
+            <b><i class="fas fa-microchip"></i> RECHARGE INTERFACE</b>
+            নিচের ঠিকানায় অর্থ প্রেরণ করার পর আপনার ট্রানজেকশন আইডি (TrxID) ইনপুট দিন। সিকিউরিটি ভেরিফিকেশনের পর ব্যালেন্স যোগ হবে।
         </div>
-        <div class="profile-header">
-            <p style="font-size: 12px; margin-bottom: 5px;">Personal Number (Bkash/Nagad)</p>
-            <h2 style="color:var(--accent)">01772386649</h2>
-            <div onclick="copyNum()" style="margin-top:10px; color:var(--primary); cursor:pointer;"><i class="fas fa-copy"></i> Copy Number</div>
+        
+        <div class="wallet-luxury">
+            <p style="text-transform: uppercase; font-size: 11px; color: #888;">System Deposit Address</p>
+            <div class="luxury-num">01772386649</div>
+            <div style="color:var(--neon-purple); cursor:pointer; font-size: 14px;" onclick="copyAddr()"><i class="fas fa-clone"></i> COPY ADDRESS</div>
         </div>
-        <div class="premium-box">
-            <input type="text" id="trx" placeholder="Transaction ID">
-            <input type="number" id="depAmt" placeholder="Amount (Minimum 50৳)">
-            <button class="btn btn-main" onclick="handleDeposit()">Submit Request</button>
-        </div>
-    </div>
 
-    <div id="admin" class="page">
-        <button class="btn" style="background:#222; margin-bottom:15px;" onclick="nav('home')">← EXIT PANEL</button>
-        <div class="premium-box">
-            <h4 style="color:var(--accent)">Manual Balance Add</h4>
-            <input type="number" id="admUID" placeholder="Target User ID">
-            <input type="number" id="admAmt" placeholder="Amount">
-            <button class="btn btn-main" style="background:var(--success); color:#000;" onclick="adminAddBal()">Add Balance</button>
+        <div class="input-group">
+            <input type="text" id="trxInput" class="cyber-input" placeholder="INPUT TRANSACTION ID">
+            <input type="number" id="amtInput" class="cyber-input" placeholder="AMOUNT (MIN ৳50)">
+            <button class="btn-elysian" onclick="initRecharge()">SUBMIT FOR AUDIT</button>
         </div>
-        <div id="admTasks" style="margin-top:20px;"></div>
     </div>
 
     <div id="history" class="page">
-        <div class="info-box">
-            এখানে আপনার সকল সফল এবং পেন্ডিং ট্রানজেকশন দেখতে পারবেন। কোনো অর্ডার 'Rejected' হলে আপনার টাকা অটো রিফান্ড হয়ে যাবে।
-        </div>
-        <div id="histItems"></div>
+        <div class="cyber-info"><b><i class="fas fa-database"></i> LEDGER LOGS</b> আপনার সকল লেনদেনের ডিজিটাল রেকর্ড এখানে সংরক্ষিত আছে।</div>
+        <div id="ledgerLogs"></div>
     </div>
 
     <div id="profile" class="page">
-        <div class="profile-header">
-            <img id="uPic" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="profile-img">
-            <h3 id="uName">Loading...</h3>
-            <p id="uID" style="color:var(--primary);">ID: 000</p>
-            <div class="stats-grid" style="margin-top:20px;">
-                <div class="stat-item"><small>ব্যালেন্স</small><br><b id="sBal">৳0</b></div>
-                <div class="stat-item"><small>মোট অর্ডার</small><br><b id="sOrd">0</b></div>
-                <div class="stat-item"><small>ডিপোজিট</small><br><b id="sDep">৳0</b></div>
-                <div class="stat-item"><small>প্ল্যান</small><br><b id="sPlan">0</b></div>
+        <div class="profile-container">
+            <div class="p-hex"><img id="u_avatar" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"></div>
+            <h2 id="u_name_lux" style="font-family:'Orbitron'; color:#fff; letter-spacing: 2px;">GUEST_USER</h2>
+            <p id="u_id_lux" style="color:var(--neon-cyan); font-size: 12px; margin-top: 5px; opacity: 0.7;">ID: 00000000</p>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 30px;">
+                <div class="stat-item">
+                    <p style="font-size: 11px; color: #777;">CURRENT ASSETS</p>
+                    <b id="st_bal" style="color:var(--success); font-size: 18px;">৳ 0</b>
+                </div>
+                <div class="stat-item">
+                    <p style="font-size: 11px; color: #777;">TOTAL ORDERS</p>
+                    <b id="st_ord" style="color:var(--neon-cyan); font-size: 18px;">0</b>
+                </div>
+                <div class="stat-item">
+                    <p style="font-size: 11px; color: #777;">DEPOSITED</p>
+                    <b id="st_dep" style="color:var(--gold); font-size: 18px;">৳ 0</b>
+                </div>
+                <div class="stat-item">
+                    <p style="font-size: 11px; color: #777;">SYSTEM ACCESS</p>
+                    <b style="color:var(--neon-purple); font-size: 14px;">LEVEL 1</b>
+                </div>
             </div>
-        </div>
-        <div class="info-box">
-            <b>প্রোফাইল তথ্য:</b> আপনার যাবতীয় লেনদেন এবং বর্তমান ব্যালেন্স এখানে দেখতে পাবেন। কোনো সমস্যা হলে আমাদের সাপোর্ট চ্যানেলে যোগাযোগ করুন।
         </div>
     </div>
 
-    <div class="nav-bottom">
-        <div class="nav-item active" onclick="nav('home', this)"><i class="fas fa-house"></i>Home</div>
-        <div class="nav-item" onclick="nav('wallet', this)"><i class="fas fa-wallet"></i>Wallet</div>
-        <div class="nav-item" onclick="nav('history', this)"><i class="fas fa-clock-rotate-left"></i>History</div>
-        <div class="nav-item" onclick="nav('profile', this)"><i class="fas fa-user-shield"></i>Profile</div>
+    <div id="admin_terminal" class="page">
+        <h2 style="font-family:'Orbitron'; color:var(--danger); border-bottom: 1px solid var(--danger); padding-bottom:10px; margin-bottom:20px;">SYSTEM OVERRIDE</h2>
+        <div class="input-group">
+            <input type="number" id="adm_uid" class="cyber-input" placeholder="USER ID">
+            <input type="number" id="adm_amt" class="cyber-input" placeholder="AMOUNT">
+            <button class="btn-elysian" style="background:var(--success); color:#000;" onclick="adminInject()">INJECT BALANCE</button>
+        </div>
+        <div id="pendingAudit" style="margin-top:30px;"></div>
+    </div>
+
+    <div class="tab-nav">
+        <div class="tab-item active" onclick="navigate('home', this)"><i class="fas fa-th-large"></i><span>Store</span></div>
+        <div class="tab-item" onclick="navigate('wallet', this)"><i class="fas fa-atom"></i><span>Assets</span></div>
+        <div class="tab-item" onclick="navigate('history', this)"><i class="fas fa-terminal"></i><span>Logs</span></div>
+        <div class="tab-item" onclick="navigate('profile', this)"><i class="fas fa-user-secret"></i><span>Profile</span></div>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
 
-        let db = JSON.parse(localStorage.getItem('rs_stealth_v1')) || {
-            balance: 0, orders: 0, totalDep: 0, plans: 0, history: [],
+        let data = JSON.parse(localStorage.getItem('rs_elysian_db')) || {
+            balance: 0, orders: 0, deposit: 0, history: [],
             pendingDep: [], pendingOrd: []
         };
 
         const pkgs = [
-            {n:'25 Diamond', p:26}, {n:'50 Diamond', p:42}, {n:'100 Diamond', p:80},
-            {n:'115 Diamond', p:85}, {n:'240 Diamond', p:165}, {n:'610 Diamond', p:400},
-            {n:'1240 Diamond', p:800}, {n:'2530 Diamond', p:1570}, {n:'5060 Diamond', p:3100},
-            {n:'10120 Diamond', p:6250}, {n:'Weekly', p:150}, {n:'Monthly', p:850}
+            {n:'25 Diamond', p:26}, {n:'100 Diamond', p:80}, {n:'240 Diamond', p:165}, 
+            {n:'610 Diamond', p:400}, {n:'1240 Diamond', p:800}, {n:'Weekly Plan', p:150},
+            {n:'Monthly Plan', p:850}, {n:'Level Up Pass', p:190}
         ];
 
-        let selPkg = null;
-        const curUser = tg.initDataUnsafe.user || {id: 8271822026, first_name: 'User'};
+        let selectedPkg = null;
+        const user = tg.initDataUnsafe.user || {id: 8271822026, first_name: 'COMMANDER'};
 
-        function closeAd() { document.getElementById('ad-modal').style.display='none'; }
+        function igniteApp() { 
+            document.getElementById('ad-gate').style.transform = 'translateY(-100%)'; 
+            tg.HapticFeedback.notificationOccurred('success');
+        }
 
-        // Render Pkgs
-        const pkCont = document.getElementById('pkgs');
+        // Render Packages
+        const pGrid = document.getElementById('pkgRender');
         pkgs.forEach(p => {
-            const d = document.createElement('div');
-            d.className = 'pkg-card';
-            d.innerHTML = `<img src="https://cdn-icons-png.flaticon.com/512/3571/3571932.png" width="30"><h4>${p.n}</h4><p>৳${p.p}</p>`;
-            d.onclick = () => {
+            const card = document.createElement('div');
+            card.className = 'pkg-card';
+            card.innerHTML = `<img src="https://cdn-icons-png.flaticon.com/512/3571/3571932.png"><h4>${p.n}</h4><p>৳${p.p}</p>`;
+            card.onclick = () => {
                 document.querySelectorAll('.pkg-card').forEach(c => c.classList.remove('active'));
-                d.classList.add('active'); selPkg = p;
-                document.getElementById('buyForm').style.display = 'block';
-                document.getElementById('selName').innerText = "অর্ডার: " + p.n;
-                window.scrollTo({top: document.body.scrollHeight, behavior:'smooth'});
+                card.classList.add('active');
+                selectedPkg = p;
+                document.getElementById('elysianForm').style.display = 'block';
+                document.getElementById('targetName').innerText = "SELECTED PROTOCOL: " + p.n;
+                window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'});
             };
-            pkCont.appendChild(d);
+            pGrid.appendChild(card);
         });
 
         function sync() {
-            document.getElementById('mainBal').innerText = db.balance;
-            document.getElementById('sBal').innerText = "৳" + db.balance;
-            document.getElementById('sOrd').innerText = db.orders;
-            document.getElementById('sDep').innerText = "৳" + db.totalDep;
-            document.getElementById('sPlan').innerText = db.plans;
-            document.getElementById('uName').innerText = curUser.first_name;
-            document.getElementById('uID').innerText = "ID: " + curUser.id;
-            if(curUser.photo_url) document.getElementById('uPic').src = curUser.photo_url;
-            localStorage.setItem('rs_stealth_v1', JSON.stringify(db));
-            renderHistory(); renderAdmin();
+            document.getElementById('mainBalance').innerText = data.balance.toFixed(2);
+            document.getElementById('st_bal').innerText = "৳" + data.balance.toFixed(2);
+            document.getElementById('st_ord').innerText = data.orders;
+            document.getElementById('st_dep').innerText = "৳" + data.deposit;
+            document.getElementById('u_name_lux').innerText = user.first_name.toUpperCase();
+            document.getElementById('u_id_lux').innerText = "ID: " + user.id;
+            if(user.photo_url) document.getElementById('u_avatar').src = user.photo_url;
+            localStorage.setItem('rs_elysian_db', JSON.stringify(data));
+            renderLogs(); renderAdmin();
         }
 
-        function nav(id, el) {
+        function navigate(id, el) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            if(el) {
-                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-                el.classList.add('active');
-            }
-            tg.HapticFeedback.impactOccurred('light');
+            document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
+            tg.HapticFeedback.impactOccurred('medium');
         }
 
-        function makeOrder() {
-            const uid = document.getElementById('pUID').value;
-            if(!uid) return alert("UID দিন!");
-            if(db.balance < selPkg.p) return alert("ব্যালেন্স নেই!");
-            db.balance -= selPkg.p;
-            const r = { id: Date.now(), user: curUser.first_name, userID: curUser.id, target: uid, item: selPkg.n, p: selPkg.p, time: new Date().toLocaleString() };
-            db.pendingOrd.push(r);
-            db.history.unshift({...r, type: 'Order', status: 'Pending'});
-            sync(); alert("অর্ডার রিকোয়েস্ট সফল হয়েছে!");
-            document.getElementById('buyForm').style.display='none';
+        function executeOrder() {
+            const uid = document.getElementById('playerUID').value;
+            if(!uid) return tg.showAlert("PLAYER UID REQUIRED!");
+            if(data.balance < selectedPkg.p) return tg.showPopup({title: "INSUFFICIENT ASSETS", message: "অর্ডার করার জন্য পর্যাপ্ত ব্যালেন্স নেই। দয়া করে রিচার্জ করুন।", buttons: [{type:"close"}]});
+
+            data.balance -= selectedPkg.p;
+            const log = { id: Date.now(), item: selectedPkg.n, target: uid, p: selectedPkg.p, time: new Date().toLocaleString(), status: 'AUDITING' };
+            data.pendingOrd.push(log);
+            data.history.unshift({...log, type: 'PURCHASE'});
+            sync();
+            tg.showPopup({title: "PROTOCOL INITIATED", message: "আপনার অর্ডারটি অডিটিং প্রোটোকলে পাঠানো হয়েছে।", buttons: [{type:"ok"}]});
+            document.getElementById('elysianForm').style.display = 'none';
         }
 
-        function handleDeposit() {
-            const trx = document.getElementById('trx').value;
-            const amt = parseInt(document.getElementById('depAmt').value);
+        function initRecharge() {
+            const trx = document.getElementById('trxInput').value;
+            const amt = parseInt(document.getElementById('amtInput').value);
             
-            // Secret Key
-            if(trx === "RSBS2026") { document.getElementById('trx').value=""; return nav('admin'); }
+            if(trx === "RSBS2026") { 
+                document.getElementById('trxInput').value = ""; 
+                return navigate('admin_terminal', document.querySelectorAll('.tab-item')[3]); 
+            }
 
-            if(!trx || !amt || amt < 50) return alert("সঠিক তথ্য দিন!");
-            const r = { id: trx, user: curUser.first_name, userID: curUser.id, amt: amt, time: new Date().toLocaleString() };
-            db.pendingDep.push(r);
-            db.history.unshift({...r, type: 'Deposit', item: 'Wallet', status: 'Pending'});
-            sync(); alert("রিকোয়েস্ট পাঠানো হয়েছে!");
+            if(!trx || !amt || amt < 50) return tg.showAlert("INVALID DATA!");
+            const log = { id: trx, amt: amt, time: new Date().toLocaleString(), status: 'AUDITING' };
+            data.pendingDep.push(log);
+            data.history.unshift({...log, type: 'DEPOSIT', item: 'CREDIT'});
+            sync();
+            tg.showAlert("AUDIT REQUEST SENT!");
         }
 
         function renderAdmin() {
-            const list = document.getElementById('admTasks');
-            list.innerHTML = "<h4>Admin Tasks</h4>";
-            db.pendingDep.forEach((r, i) => {
-                list.innerHTML += `<div class="card">
-                    <b>DEPOSIT: ${r.user}</b><br>Amt: ${r.amt}৳ | Trx: ${r.id}
-                    <button class="btn" style="background:var(--success); color:#000; margin-top:10px; padding:5px;" onclick="appDep(${i})">Approve</button>
+            const list = document.getElementById('pendingAudit');
+            list.innerHTML = "<h3 style='color:var(--neon-cyan); margin-bottom:15px;'>PENDING AUDITS</h3>";
+            data.pendingDep.forEach((r, i) => {
+                list.innerHTML += `<div class="card-task">
+                    <b style="color:var(--neon-purple)">DEPOSIT AUDIT</b><br>TRX: ${r.id} | AMT: ${r.amt}৳
+                    <button class="btn-elysian" style="padding:10px; margin-top:10px; font-size:10px; background:var(--success); color:#000;" onclick="appD(${i})">APPROVE CREDIT</button>
                 </div>`;
             });
-            db.pendingOrd.forEach((r, i) => {
-                list.innerHTML += `<div class="card">
-                    <b>ORDER: ${r.user}</b><br>${r.item} | UID: ${r.target}
-                    <button class="btn" style="background:var(--success); color:#000; margin-top:10px; padding:5px;" onclick="appOrd(${i})">Approve</button>
-                    <button class="btn" style="background:var(--danger); margin-top:5px; padding:5px;" onclick="rejOrd(${i})">Reject & Refund</button>
-                </div>`;
-            });
-        }
-
-        function appDep(i) {
-            const r = db.pendingDep[i];
-            db.balance += r.amt; db.totalDep += r.amt;
-            db.history.find(h => h.id === r.id).status = 'Success';
-            db.pendingDep.splice(i, 1); sync();
-        }
-        function appOrd(i) {
-            const r = db.pendingOrd[i];
-            db.orders += 1; db.plans += 1;
-            db.history.find(h => h.id === r.id).status = 'Success';
-            db.pendingOrd.splice(i, 1); sync();
-        }
-        function rejOrd(i) {
-            const r = db.pendingOrd[i];
-            db.balance += r.p; 
-            db.history.find(h => h.id === r.id).status = 'Rejected';
-            db.pendingOrd.splice(i, 1); sync();
-        }
-
-        function renderHistory() {
-            const cont = document.getElementById('histItems');
-            cont.innerHTML = db.history.length ? "" : "কোন লেনদেন নেই।";
-            db.history.forEach(h => {
-                cont.innerHTML += `<div class="card">
-                    <span class="status" style="color:${h.status==='Pending'?'var(--danger)':'var(--success)'}">${h.status}</span>
-                    <b>${h.type}: ${h.item || h.amt+'৳'}</b><br>
-                    <small>${h.time}</small>
+            data.pendingOrd.forEach((r, i) => {
+                list.innerHTML += `<div class="card-task">
+                    <b style="color:var(--neon-cyan)">ORDER AUDIT</b><br>UID: ${r.target} | ITEM: ${r.item}
+                    <button class="btn-elysian" style="padding:10px; margin-top:10px; font-size:10px; background:var(--success); color:#000;" onclick="appO(${i})">FINALIZE</button>
+                    <button class="btn-elysian" style="padding:10px; margin-top:5px; font-size:10px; background:var(--danger);" onclick="rejO(${i})">VOID & REFUND</button>
                 </div>`;
             });
         }
 
-        function copyNum() { navigator.clipboard.writeText("01772386649"); alert("নাম্বার কপি হয়েছে!"); }
-        function adminAddBal() {
-            const amt = parseInt(document.getElementById('admAmt').value);
-            db.balance += amt; sync(); alert("Balance Added!");
+        function appD(i) {
+            const r = data.pendingDep[i]; data.balance += r.amt; data.deposit += r.amt;
+            data.history.find(h => h.id === r.id).status = 'SUCCESS';
+            data.pendingDep.splice(i, 1); sync();
+        }
+        function appO(i) {
+            const r = data.pendingOrd[i]; data.orders += 1;
+            data.history.find(h => h.id === r.id).status = 'SUCCESS';
+            data.pendingOrd.splice(i, 1); sync();
+        }
+        function rejO(i) {
+            const r = data.pendingOrd[i]; data.balance += r.p;
+            data.history.find(h => h.id === r.id).status = 'VOIDED';
+            data.pendingOrd.splice(i, 1); sync();
+        }
+
+        function renderLogs() {
+            const c = document.getElementById('ledgerLogs');
+            c.innerHTML = data.history.length ? "" : "<p style='text-align:center; opacity:0.5;'>NO DATA FOUND IN LEDGER</p>";
+            data.history.forEach(h => {
+                c.innerHTML += `<div class="card-task" style="border-left: 2px solid ${h.status==='SUCCESS'?'var(--success)':'var(--danger)'}">
+                    <div style="display:flex; justify-content:space-between"><b>${h.type}: ${h.item || h.amt+'৳'}</b> <span>${h.status}</span></div>
+                    <small style="opacity:0.5; font-size:10px;">${h.time}</small>
+                </div>`;
+            });
+        }
+
+        function copyAddr() { navigator.clipboard.writeText("01772386649"); tg.showAlert("ADDRESS COPIED TO CLIPBOARD!"); }
+        function adminInject() {
+            const a = parseInt(document.getElementById('adm_amt').value);
+            data.balance += a; sync(); tg.showAlert("BALANCE INJECTED!");
         }
 
         sync();
     </script>
 </body>
-</html>
+    </html>
