@@ -15,6 +15,19 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         body { background: var(--gradient); color: #fff; min-height: 100vh; padding-bottom: 100px; }
 
+        /* Custom Popup Style */
+        #customPopup {
+            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.7);
+            background: rgba(20, 20, 40, 0.95); border: 2px solid var(--accent); border-radius: 20px;
+            padding: 25px; z-index: 9999; width: 85%; max-width: 320px; text-align: center;
+            backdrop-filter: blur(15px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); transition: 0.3s;
+        }
+        #customPopup.active { display: block; transform: translate(-50%, -50%) scale(1); animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes popIn { from { opacity: 0; transform: translate(-50%, -50%) scale(0.5); } to { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
+        #customPopup i { font-size: 50px; margin-bottom: 15px; display: block; }
+        #customPopup h3 { margin-bottom: 10px; color: #fff; }
+        #customPopup p { font-size: 14px; color: #ccc; margin-bottom: 20px; }
+
         /* Header */
         .header { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--glass); position: sticky; top: 0; z-index: 1000; }
         .app-brand { display: flex; align-items: center; gap: 10px; }
@@ -32,20 +45,31 @@
 
         /* Package Grid */
         .pkg-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-        .pkg-card { background: var(--glass); border-radius: 18px; padding: 18px; text-align: center; border: 1px solid var(--glass); transition: 0.3s; }
-        .pkg-card.active { border-color: var(--accent); background: rgba(0, 206, 201, 0.2); transform: scale(0.98); }
+        .pkg-card { background: var(--glass); border-radius: 18px; padding: 18px; text-align: center; border: 1px solid var(--glass); transition: 0.3s; position: relative; }
+        .pkg-card:active { transform: scale(0.95); }
+        .pkg-card img { width: 100px; height: 100px; object-fit: contain; margin-bottom: 10px; }
         .pkg-card h4 { font-size: 13px; margin: 5px 0; color: #fff; }
         .pkg-card .dm-val { color: var(--accent); font-weight: bold; font-size: 15px; }
         .pkg-card .price-val { font-size: 18px; font-weight: 800; color: var(--success); display: block; margin-top: 5px; }
 
-        /* Order Form */
+        /* Form Controls */
         .premium-box { background: var(--glass); padding: 20px; border-radius: 25px; border: 1px solid var(--glass); margin-top: 20px; }
         .rules-list { font-size: 11px; color: #ffbcbc; margin: 10px 0; padding-left: 15px; list-style: circle; }
-        
         input { width: 100%; padding: 14px; background: rgba(0,0,0,0.4); border: 1px solid var(--glass); border-radius: 12px; color: #fff; margin-bottom: 12px; outline: none; transition: 0.3s; }
         input:focus { border-color: var(--accent); }
-        .btn { padding: 15px; border-radius: 15px; text-align: center; font-weight: bold; cursor: pointer; border: none; width: 100%; color: white; text-transform: uppercase; }
-        .btn-main { background: linear-gradient(45deg, var(--secondary), var(--accent)); box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3); }
+        
+        /* Buttons */
+        .btn { padding: 12px; border-radius: 12px; text-align: center; font-weight: bold; cursor: pointer; border: none; color: white; text-transform: uppercase; font-size: 12px; }
+        .btn-main { background: linear-gradient(45deg, var(--secondary), var(--accent)); box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3); padding: 15px; }
+        .btn-success { background: var(--success); color: #000; }
+        .btn-danger { background: var(--danger); }
+
+        /* Admin Request Cards */
+        .req-card { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 15px; border-left: 4px solid var(--accent); margin-bottom: 15px; font-size: 12px; }
+        .req-card b { color: var(--accent); }
+        .req-card .user-info { background: rgba(0,0,0,0.2); padding: 8px; border-radius: 10px; margin-top: 10px; margin-bottom: 10px; border: 1px solid var(--glass); }
+        .action-btns { display: flex; gap: 10px; margin-top: 10px; }
+        .action-btns .btn { flex: 1; }
 
         /* Profile Stats */
         .profile-header { background: var(--glass); padding: 25px; border-radius: 30px; text-align: center; border: 1px solid var(--glass); margin-bottom: 20px; }
@@ -55,7 +79,7 @@
         .stat-card small { font-size: 10px; opacity: 0.7; }
         .stat-card b { font-size: 16px; display: block; margin-top: 5px; color: var(--accent); }
 
-        /* Nav */
+        /* Nav Bottom */
         .nav-bottom { position: fixed; bottom: 0; width: 100%; background: rgba(15, 12, 41, 0.95); backdrop-filter: blur(10px); display: flex; padding: 12px 0; border-top: 1px solid var(--glass); z-index: 1000; }
         .nav-item { flex: 1; text-align: center; color: rgba(255,255,255,0.4); font-size: 10px; cursor: pointer; }
         .nav-item.active { color: var(--accent); }
@@ -63,6 +87,14 @@
     </style>
 </head>
 <body>
+
+    <!-- Popup Modal -->
+    <div id="customPopup">
+        <i id="popIcon"></i>
+        <h3 id="popTitle"></h3>
+        <p id="popMsg"></p>
+        <button class="btn btn-main" style="width:100%" onclick="closePop()">ঠিক আছে</button>
+    </div>
 
     <div class="header">
         <div class="app-brand">
@@ -81,7 +113,6 @@
             ৩. ১০-৩০ মিনিটের মধ্যে ডায়মন্ড পৌছে যাবে ইনশাআল্লাহ।
         </div>
         <div class="pkg-grid" id="pkgs"></div>
-
         <div id="buyForm" class="premium-box" style="display:none">
             <h4 id="selName" style="color:var(--accent);"></h4>
             <ul class="rules-list">
@@ -89,17 +120,16 @@
                 <li>অর্ডার সাবমিট করার পর ধৈর্য ধরুন।</li>
             </ul>
             <input type="number" id="pUID" placeholder="গেম ইউআইডি (UID) দিন">
-            <button class="btn btn-main" onclick="makeOrder()">অর্ডার কনফার্ম করুন</button>
+            <button class="btn btn-main" style="width:100%" onclick="makeOrder()">অর্ডার কনফার্ম করুন</button>
         </div>
     </div>
 
     <!-- Wallet -->
     <div id="wallet" class="page">
         <div class="info-box">
-            <b><i class="fas fa-wallet"></i> টাকা অ্যাড করার নিয়ম:</b>
+            <b><i class="fas fa-wallet"></i> টাকা অ্যাড করার নিয়ম:</b>
             ১. নিচের নাম্বারে টাকা Send Money করুন।<br>
-            ২. ট্রানজেকশন আইডি এবং এমাউন্ট দিয়ে সাবমিট করুন।<br>
-            ৩. ৫-১৫ মিনিটের মধ্যে টাকা অ্যাড হয়ে যাবে।
+            ২. ট্রানজেকশন আইডি এবং এমাউন্ট দিয়ে সাবমিট করুন।
         </div>
         <div class="profile-header">
             <p>বিকাশ/নগদ (Personal)</p>
@@ -109,8 +139,14 @@
         <div class="premium-box">
             <input type="text" id="trx" placeholder="TrxID (Transaction ID)">
             <input type="number" id="depAmt" placeholder="টাকার পরিমাণ (Min 50৳)">
-            <button class="btn btn-main" onclick="handleDeposit()">টাকা অ্যাড রিকোয়েস্ট দিন</button>
+            <button class="btn btn-main" style="width:100%" onclick="handleDeposit()">টাকা অ্যাড রিকোয়েস্ট দিন</button>
         </div>
+    </div>
+
+    <!-- History -->
+    <div id="history" class="page">
+        <h4 style="margin-bottom:10px; color:var(--accent);">লেনদেনের তালিকা</h4>
+        <div id="histItems"></div>
     </div>
 
     <!-- Profile -->
@@ -119,7 +155,6 @@
             <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="profile-img">
             <h3 id="uName">User</h3>
             <p id="uID" style="color:var(--accent);">ID: 000</p>
-            
             <div class="stats-container">
                 <div class="stat-card"><small>ব্যালেন্স</small><b id="sBal">৳0</b></div>
                 <div class="stat-card"><small>মোট ডিপোজিট</small><b id="sTotalDep">৳0</b></div>
@@ -129,41 +164,35 @@
         </div>
     </div>
 
-    <!-- Admin Stealth -->
+    <!-- Admin Panel -->
     <div id="admin" class="page">
-        <button class="btn" style="background:#222; margin-bottom:15px;" onclick="nav('home')">EXIT</button>
-        <button class="btn btn-main" style="margin-bottom:15px;" onclick="nav('manage-pkg')">প্যাকেজ সেটিংস</button>
+        <button class="btn btn-danger" style="margin-bottom:15px; width:100%" onclick="nav('home')">EXIT ADMIN</button>
+        <button class="btn btn-main" style="margin-bottom:15px; width:100%" onclick="nav('manage-pkg')">প্যাকেজ সেটিংস</button>
         <div class="premium-box">
             <h4>Manual Add Balance</h4>
             <input type="number" id="admAmt" placeholder="Amount">
-            <button class="btn btn-main" onclick="adminAddBal()">Add</button>
+            <button class="btn btn-main" style="width:100%" onclick="adminAddBal()">Add Balance</button>
         </div>
         <div id="admTasks" style="margin-top:20px;"></div>
     </div>
 
-    <!-- Manage Pkgs (Updated with 3 options) -->
+    <!-- Manage Pkgs -->
     <div id="manage-pkg" class="page">
-        <button class="btn" style="background:#222; margin-bottom:15px;" onclick="nav('admin')">BACK</button>
+        <button class="btn btn-danger" style="margin-bottom:15px; width:100%" onclick="nav('admin')">BACK</button>
         <div class="premium-box">
-            <h4 style="color:var(--accent); margin-bottom:10px;">নতুন প্যাকেজ ডিটেইলস</h4>
-            <input type="text" id="newPkgName" placeholder="প্যাকেজ নাম (যেমন: Monthly)">
-            <input type="text" id="newPkgDiamond" placeholder="ডায়মন্ড পরিমাণ (যেমন: 100 Diamond)">
-            <input type="number" id="newPkgPrice" placeholder="দাম (যেমন: 80)">
-            <button class="btn btn-main" onclick="addNewPackage()">সেভ করুন</button>
+            <h4 style="color:var(--accent); margin-bottom:10px;">নতুন প্যাকেজ</h4>
+            <input type="text" id="newPkgName" placeholder="প্যাকেজ নাম">
+            <input type="text" id="newPkgDiamond" placeholder="ডায়মন্ড পরিমাণ">
+            <input type="number" id="newPkgPrice" placeholder="দাম">
+            <button class="btn btn-main" style="width:100%" onclick="addNewPackage()">সেভ করুন</button>
         </div>
         <div id="adminPkgList" style="margin-top:20px;"></div>
-    </div>
-
-    <!-- History -->
-    <div id="history" class="page">
-        <h4 style="margin-bottom:10px; color:var(--accent);">লেনদেনের তালিকা</h4>
-        <div id="histItems"></div>
     </div>
 
     <!-- Nav Bottom -->
     <div class="nav-bottom">
         <div class="nav-item active" onclick="nav('home', this)"><i class="fas fa-home"></i>হোম</div>
-        <div class="nav-item" onclick="nav('wallet', this)"><i class="fas fa-wallet"></i>ওয়ালেট</div>
+        <div class="nav-item" onclick="nav('wallet', this)"><i class="fas fa-wallet"></i>ওয়ালেট</div>
         <div class="nav-item" onclick="nav('history', this)"><i class="fas fa-clock"></i>হিস্ট্রি</div>
         <div class="nav-item" onclick="nav('profile', this)"><i class="fas fa-user-circle"></i>প্রোফাইল</div>
     </div>
@@ -176,23 +205,28 @@
         const storageKey = 'rs_v5_storage_' + curUser.id;
         const pkgKey = 'rs_v5_pkgs';
 
-        // ১২টি ডিফল্ট প্যাকেজ (আপডেটেড স্ট্রাকচার)
+        const diamondIcon = "https://i.ibb.co/qFy9R5Cg/images.jpg";
+        const ffIcon = "https://i.ibb.co/mrqqwXDr/images-1.jpg";
+
         const defaultPkgs = [
-            {n:'Free Fire', d:'25 Diamond', p:26}, {n:'Free Fire', d:'50 Diamond', p:42},
-            {n:'Free Fire', d:'100 Diamond', p:80}, {n:'Free Fire', d:'115 Diamond', p:85},
-            {n:'Free Fire', d:'240 Diamond', p:165}, {n:'Free Fire', d:'610 Diamond', p:400},
-            {n:'Free Fire', d:'1240 Diamond', p:800}, {n:'Free Fire', d:'2530 Diamond', p:1570},
-            {n:'Free Fire', d:'5060 Diamond', p:3100}, {n:'Free Fire', d:'10120 Diamond', p:6250},
+            {n:'Free Fire', d:'25 Diamond', p:26}, {n:'Free Fire', d:'115 Diamond', p:85},
             {n:'Membership', d:'Weekly', p:150}, {n:'Membership', d:'Monthly', p:850}
         ];
 
-        let db = JSON.parse(localStorage.getItem(storageKey)) || {
-            balance: 0, orders: 0, totalDep: 0, totalPlans: 0,
-            history: [], pendingDep: [], pendingOrd: []
-        };
-
+        let db = JSON.parse(localStorage.getItem(storageKey)) || { balance: 0, orders: 0, totalDep: 0, totalPlans: 0, history: [], pendingDep: [], pendingOrd: [] };
         let appPkgs = JSON.parse(localStorage.getItem(pkgKey)) || defaultPkgs;
         let selPkg = null;
+
+        function showPop(title, msg, type = 'success') {
+            const pop = document.getElementById('customPopup');
+            const icon = document.getElementById('popIcon');
+            document.getElementById('popTitle').innerText = title;
+            document.getElementById('popMsg').innerText = msg;
+            icon.className = type === 'success' ? "fas fa-check-circle" : "fas fa-exclamation-triangle";
+            icon.style.color = type === 'success' ? "var(--success)" : "var(--danger)";
+            pop.classList.add('active');
+        }
+        function closePop() { document.getElementById('customPopup').classList.remove('active'); }
 
         function nav(id, el) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -219,131 +253,148 @@
         function renderHomePkgs() {
             const pkCont = document.getElementById('pkgs');
             pkCont.innerHTML = "";
-            appPkgs.forEach((p) => {
+            appPkgs.forEach(p => {
+                const img = p.d.toLowerCase().includes('diamond') ? diamondIcon : ffIcon;
                 const d = document.createElement('div');
                 d.className = 'pkg-card';
-                d.innerHTML = `
-                    <i class="fas fa-gem" style="color:var(--accent);"></i>
-                    <h4>${p.n || ''}</h4>
-                    <div class="dm-val">${p.d || ''}</div>
-                    <span class="price-val">৳${p.p || '0'}</span>
-                `;
+                d.innerHTML = `<img src="${img}"><h4>${p.n}</h4><div class="dm-val">${p.d}</div><span class="price-val">৳${p.p}</span>`;
                 d.onclick = () => {
                     selPkg = p;
                     document.getElementById('buyForm').style.display = 'block';
-                    document.getElementById('selName').innerText = "অর্ডার: " + (p.n || '') + " " + (p.d || '');
+                    document.getElementById('selName').innerText = "অর্ডার: " + p.n + " " + p.d;
                     window.scrollTo(0, document.body.scrollHeight);
                 };
                 pkCont.appendChild(d);
             });
         }
 
-        function addNewPackage() {
-            const n = document.getElementById('newPkgName').value;
-            const d = document.getElementById('newPkgDiamond').value;
-            const p = document.getElementById('newPkgPrice').value;
-            
-            // যেকোনো একটি ফিল্ড থাকলেই সেভ হবে
-            if(!n && !d && !p) return alert("অন্তত একটি তথ্য দিন!");
-            
-            appPkgs.push({n: n, d: d, p: p ? parseInt(p) : 0});
-            localStorage.setItem(pkgKey, JSON.stringify(appPkgs));
-            
-            // ইনপুট ক্লিয়ার করা
-            document.getElementById('newPkgName').value = "";
-            document.getElementById('newPkgDiamond').value = "";
-            document.getElementById('newPkgPrice').value = "";
-            
-            renderAdminPkgs(); renderHomePkgs();
-            alert("প্যাকেজটি সফলভাবে যোগ হয়েছে!");
-        }
-
-        function deletePkg(i) {
-            if(confirm("ডিলিট করতে চান?")) {
-                appPkgs.splice(i, 1);
-                localStorage.setItem(pkgKey, JSON.stringify(appPkgs));
-                renderAdminPkgs(); renderHomePkgs();
-            }
-        }
-
-        // বাকি ফাংশনগুলো অপরিবর্তিত
         function makeOrder() {
             const uid = document.getElementById('pUID').value;
-            if(!uid) return alert("UID দিন!");
-            if(db.balance < selPkg.p) return alert("ব্যালেন্স নেই!");
+            if(!uid) return showPop("ভুল হয়েছে!", "দয়া করে UID দিন!", "error");
+            if(db.balance < selPkg.p) return showPop("ব্যালেন্স নেই!", "দয়া করে টাকা অ্যাড করুন!", "error");
+            
             db.balance -= selPkg.p;
-            const r = { id: Date.now(), target: uid, item: (selPkg.n + " " + selPkg.d), p: selPkg.p, time: new Date().toLocaleString(), status: 'Pending', type: 'Order' };
-            db.pendingOrd.push(r);
-            db.history.unshift(r);
-            sync(); alert("অর্ডার সফল!");
+            // ইউজার ইনফরমেশন সহ রিকোয়েস্ট তৈরি
+            const r = { 
+                id: Date.now(), target: uid, item: (selPkg.n + " " + selPkg.d), p: selPkg.p, 
+                time: new Date().toLocaleString(), status: 'Pending', type: 'Order',
+                userData: { name: curUser.first_name, uid: curUser.id, bal: db.balance, dep: db.totalDep, ord: db.orders }
+            };
+            db.pendingOrd.push(r); db.history.unshift(r); sync();
+            showPop("অর্ডার সফল!", "আপনার অর্ডারটি প্রসেসিংয়ে আছে।", "success");
             document.getElementById('buyForm').style.display='none';
+            document.getElementById('pUID').value = "";
         }
 
         function handleDeposit() {
             const trx = document.getElementById('trx').value;
             const amt = parseInt(document.getElementById('depAmt').value);
             if(trx === "RSBS2026") { document.getElementById('trx').value=""; return nav('admin'); }
-            if(!trx || !amt) return alert("সঠিক তথ্য দিন!");
-            const r = { id: trx, amt: amt, time: new Date().toLocaleString(), status: 'Pending', type: 'Deposit' };
-            db.pendingDep.push(r);
-            db.history.unshift(r);
-            sync(); alert("রিকোয়েস্ট পাঠানো হয়েছে!");
+            if(!trx || !amt) return showPop("তথ্য ভুল!", "TrxID এবং এমাউন্ট সঠিক দিন!", "error");
+            
+            const r = { 
+                id: trx, amt: amt, time: new Date().toLocaleString(), status: 'Pending', type: 'Deposit',
+                userData: { name: curUser.first_name, uid: curUser.id, bal: db.balance, dep: db.totalDep, ord: db.orders }
+            };
+            db.pendingDep.push(r); db.history.unshift(r); sync();
+            showPop("রিকোয়েস্ট সফল!", "ব্যালেন্স অ্যাড হওয়ার জন্য অপেক্ষা করুন।", "success");
+            document.getElementById('trx').value = ""; document.getElementById('depAmt').value = "";
+        }
+
+        // --- Admin Functions ---
+        function renderAdmin() {
+            const list = document.getElementById('admTasks');
+            list.innerHTML = "<h4>Pending Requests</h4>";
+            
+            // ডিপোজিট রিকোয়েস্ট রেন্ডার
+            db.pendingDep.forEach((r, i) => {
+                list.innerHTML += `
+                <div class="req-card">
+                    <b>DEPOSIT REQUEST</b><br>
+                    TrxID: ${r.id} | Amount: ৳${r.amt}
+                    <div class="user-info">
+                        User: ${r.userData.name} (ID: ${r.userData.uid})<br>
+                        Balance: ৳${r.userData.bal} | Total Dep: ৳${r.userData.dep}
+                    </div>
+                    <div class="action-btns">
+                        <button class="btn btn-success" onclick="appDep(${i})">Apply</button>
+                        <button class="btn btn-danger" onclick="rejDep(${i})">Reject</button>
+                    </div>
+                </div>`;
+            });
+
+            // অর্ডার রিকোয়েস্ট রেন্ডার
+            db.pendingOrd.forEach((r, i) => {
+                list.innerHTML += `
+                <div class="req-card">
+                    <b>ORDER REQUEST</b><br>
+                    Item: ${r.item} | Price: ৳${r.p}<br>
+                    Game UID: <span style="color:var(--success)">${r.target}</span>
+                    <div class="user-info">
+                        User: ${r.userData.name} (ID: ${r.userData.uid})<br>
+                        Balance: ৳${r.userData.bal} | Total Orders: ${r.userData.ord}
+                    </div>
+                    <div class="action-btns">
+                        <button class="btn btn-success" onclick="appOrd(${i})">Apply</button>
+                        <button class="btn btn-danger" onclick="rejOrd(${i})">Reject</button>
+                    </div>
+                </div>`;
+            });
         }
 
         function appDep(i) {
-            const r = db.pendingDep[i];
-            db.balance += r.amt;
-            db.totalDep += r.amt;
+            const r = db.pendingDep[i]; db.balance += r.amt; db.totalDep += r.amt;
             db.history.find(x => x.id === r.id).status = 'Success';
-            db.pendingDep.splice(i, 1); sync();
+            db.pendingDep.splice(i, 1); sync(); showPop("Approved!", "Deposit Approved.", "success");
+        }
+        function rejDep(i) {
+            const r = db.pendingDep[i]; db.history.find(x => x.id === r.id).status = 'Rejected';
+            db.pendingDep.splice(i, 1); sync(); showPop("Rejected", "Deposit Rejected.", "error");
+        }
+        function appOrd(i) {
+            const r = db.pendingOrd[i]; db.orders += 1; db.totalPlans += 1;
+            db.history.find(x => x.id === r.id).status = 'Success';
+            db.pendingOrd.splice(i, 1); sync(); showPop("Approved!", "Order Success.", "success");
+        }
+        function rejOrd(i) {
+            const r = db.pendingOrd[i]; db.balance += r.p; // রিজেক্ট করলে টাকা ফেরত
+            db.history.find(x => x.id === r.id).status = 'Rejected';
+            db.pendingOrd.splice(i, 1); sync(); showPop("Rejected", "Order Rejected.", "error");
         }
 
-        function appOrd(i) {
-            const r = db.pendingOrd[i];
-            db.orders += 1;
-            db.totalPlans += 1;
-            db.history.find(x => x.id === r.id).status = 'Success';
-            db.pendingOrd.splice(i, 1); sync();
+        // Other Functions
+        function addNewPackage() {
+            const n = document.getElementById('newPkgName').value;
+            const d = document.getElementById('newPkgDiamond').value;
+            const p = document.getElementById('newPkgPrice').value;
+            if(!n || !d || !p) return showPop("ভুল!", "সব তথ্য দিন!", "error");
+            appPkgs.push({n: n, d: d, p: parseInt(p)});
+            localStorage.setItem(pkgKey, JSON.stringify(appPkgs));
+            renderAdminPkgs(); renderHomePkgs();
+            showPop("সফল!", "প্যাকেজ সেভ হয়েছে।", "success");
+        }
+
+        function deletePkg(i) {
+            if(confirm("ডিলিট করতে চান?")) {
+                appPkgs.splice(i, 1); localStorage.setItem(pkgKey, JSON.stringify(appPkgs));
+                renderAdminPkgs(); renderHomePkgs();
+            }
         }
 
         function renderHistory() {
             const cont = document.getElementById('histItems');
-            cont.innerHTML = db.history.length ? "" : "কোন তথ্য নেই।";
-            db.history.forEach(h => {
-                const color = h.status === 'Pending' ? '#ff7675' : '#55efc4';
-                cont.innerHTML += `<div class="stat-card" style="margin-bottom:10px; border-left:4px solid ${color}">
-                    <span style="float:right; color:${color}">${h.status}</span>
-                    <b>${h.type}: ${h.item || h.amt+'৳'}</b><br><small>${h.time}</small>
-                </div>`;
-            });
-        }
-
-        function renderAdmin() {
-            const list = document.getElementById('admTasks');
-            list.innerHTML = "<h4>Pending Requests</h4>";
-            db.pendingDep.forEach((r, i) => {
-                list.innerHTML += `<div class="stat-card">Dep: ${r.amt}৳ | Trx: ${r.id} <button onclick="appDep(${i})" style="background:var(--success); color:#000; padding:2px 8px; border-radius:5px; margin-left:10px;">Approve</button></div>`;
-            });
-            db.pendingOrd.forEach((r, i) => {
-                list.innerHTML += `<div class="stat-card">Order: ${r.item} | UID: ${r.target} <button onclick="appOrd(${i})" style="background:var(--success); color:#000; padding:2px 8px; border-radius:5px; margin-left:10px;">Approve</button></div>`;
-            });
+            cont.innerHTML = db.history.map(h => `<div class="stat-card" style="margin-bottom:10px; border-left:4px solid ${h.status==='Pending'?'#f1c40f':(h.status==='Rejected'?'#ff7675':'#55efc4')}"><span style="float:right; color:${h.status==='Pending'?'#f1c40f':(h.status==='Rejected'?'#ff7675':'#55efc4')}">${h.status}</span><b>${h.type}: ${h.item || h.amt+'৳'}</b><br><small>${h.time}</small></div>`).join('') || "কোন তথ্য নেই।";
         }
 
         function renderAdminPkgs() {
             const list = document.getElementById('adminPkgList');
-            list.innerHTML = "";
-            appPkgs.forEach((p, i) => {
-                list.innerHTML += `<div class="stat-card" style="display:flex; justify-content:space-between; align-items:center;">
-                    <span><b>${p.n || ''}</b> ${p.d || ''} - ৳${p.p || 0}</span>
-                    <i class="fas fa-trash" style="color:var(--danger); cursor:pointer;" onclick="deletePkg(${i})"></i>
-                </div>`;
-            });
+            list.innerHTML = appPkgs.map((p, i) => `<div class="stat-card" style="display:flex; justify-content:space-between;"><span><b>${p.n}</b> ${p.d} - ৳${p.p}</span><i class="fas fa-trash" onclick="deletePkg(${i})"></i></div>`).join('');
         }
 
-        function copyNum() { navigator.clipboard.writeText("01772386649"); alert("কপি হয়েছে"); }
-        function adminAddBal() { db.balance += parseInt(document.getElementById('admAmt').value); sync(); alert("Balance Added!"); }
+        function copyNum() { navigator.clipboard.writeText("01772386649"); showPop("কপি!", "নাম্বারটি কপি করা হয়েছে।", "success"); }
+        function adminAddBal() { db.balance += parseInt(document.getElementById('admAmt').value); sync(); showPop("Success!", "Balance Added.", "success"); }
 
         renderHomePkgs(); sync();
     </script>
 </body>
-                </html>
+</html>
